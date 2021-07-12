@@ -53,6 +53,7 @@ func main() {
 		case <-interrupt:
 			fmt.Println("Stopping...")
 			socket.Close()
+			os.Exit(0)
 			return
 		}
 	}
