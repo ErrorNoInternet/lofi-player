@@ -40,6 +40,7 @@ func main() {
 	socket.OnDisconnected = func(_ error, socket gowebsocket.Socket) {
 		if streaming {
 			fmt.Println("Disconnected from server")
+			ioutil.WriteFile(streamPath, []byte(""), 0644)
 			socket.Connect()
 		}
 	}
