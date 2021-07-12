@@ -37,8 +37,10 @@ func main() {
 		go playAudio()
 	}
 	socket.OnDisconnected = func(_ error, socket gowebsocket.Socket) {
-		fmt.Println("Disconnected from server")
-		socket.Connect()
+		if streaming {
+			fmt.Println("Disconnected from server")
+			socket.Connect()
+		}
 	}
 	socket.OnBinaryMessage = func(data []byte, socket gowebsocket.Socket) {
 		streaming = true
@@ -52,6 +54,7 @@ func main() {
 		select {
 		case <-interrupt:
 			fmt.Println("Stopping...")
+			streaming = false
 			socket.Close()
 			os.Exit(0)
 			return
@@ -65,6 +68,9 @@ func playAudio() {
 	}
 	for {
 		exec.Command("mpv", "--no-video", streamPath).Output()
+		if !streaming {
+			os.Exit(0)
+		}
 		fmt.Println("Restarting audio player...")
 	}
 }
