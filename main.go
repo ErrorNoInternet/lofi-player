@@ -19,7 +19,7 @@ var streamPath string = "/tmp/lofi-stream.ts"
 func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
-	sessionId := strconv.Itoa(rand.Intn(2147483647))
+	sessionId := strconv.Itoa(rand.Intn(2147483648))
 	environmentPath := os.Getenv("TEMP")
 	if environmentPath != "" {
 		streamPath = environmentPath + "\\lofi-stream.ts"
@@ -28,6 +28,7 @@ func main() {
 	streamFile, errorObject := os.OpenFile(streamPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 6400)
 	if errorObject != nil {
 		fmt.Println("Unable to open stream file")
+		return
 	}
 	defer streamFile.Close()
 
