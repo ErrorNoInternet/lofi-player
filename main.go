@@ -13,7 +13,7 @@ import (
 	"github.com/sacOO7/gowebsocket"
 )
 
-var streaming bool = false
+var streaming bool
 var streamPath string = "/tmp/lofi-stream.ts"
 
 func main() {
