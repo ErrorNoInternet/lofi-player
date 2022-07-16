@@ -30,7 +30,7 @@ func main() {
 	}
 	socket.OnDisconnected = func(err error, socket gowebsocket.Socket) {
 		if streaming {
-			fmt.Println("Disconnected from server: " + err.Error())
+			fmt.Println("\nDisconnected from server: " + err.Error())
 			socket.Connect()
 		}
 	}
@@ -45,7 +45,7 @@ func main() {
 	for {
 		select {
 		case <-interrupt:
-			fmt.Println("Stopping...")
+			fmt.Println("\nStopping...")
 			streaming = false
 			socket.Close()
 			return
@@ -61,6 +61,6 @@ func playAudio() {
 		if !streaming {
 			return
 		}
-		fmt.Println("Restarting audio player...")
+		fmt.Println("\nRestarting audio player...")
 	}
 }
