@@ -15,7 +15,7 @@ import (
 var (
 	streaming  bool = true
 	streamPipe io.Writer
-	received   int
+	received   int64
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 		fmt.Printf("\r[%v] Receiving stream data...", received)
 		io.WriteString(streamPipe, string(data))
 		socket.SendText("pong")
-		received += 1
+		received++
 	}
 	socket.Connect()
 
