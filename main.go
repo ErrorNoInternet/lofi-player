@@ -18,6 +18,9 @@ var (
 	streaming  bool = true
 	streamPipe io.Writer
 	received   int64
+
+	optionNoPresence bool
+	optionVideo      bool
 )
 
 func main() {
@@ -25,21 +28,30 @@ func main() {
 	signal.Notify(interrupt, os.Interrupt)
 	rand.Seed(time.Now().UnixNano())
 	sessionId := strconv.Itoa(rand.Intn(2147483648))
-
-	err := client.Login("997806917588095066")
-	if err != nil {
-		fmt.Println("Unable to set status: " + err.Error())
+	for _, argument := range os.Args {
+		if argument == "--no-presence" {
+			optionNoPresence = true
+		} else if argument == "--video" {
+			optionVideo = true
+		}
 	}
-	startTime := time.Now()
-	err = client.SetActivity(client.Activity{
-		State:      "Listening to lofi music",
-		LargeImage: "image",
-		Timestamps: &client.Timestamps{
-			Start: &startTime,
-		},
-	})
-	if err != nil {
-		fmt.Println("Unable to set status: " + err.Error())
+
+	if !optionNoPresence {
+		err := client.Login("997806917588095066")
+		if err != nil {
+			fmt.Println("Unable to set status: " + err.Error())
+		}
+		startTime := time.Now()
+		err = client.SetActivity(client.Activity{
+			State:      "Listening to lofi music",
+			LargeImage: "image",
+			Timestamps: &client.Timestamps{
+				Start: &startTime,
+			},
+		})
+		if err != nil {
+			fmt.Println("Unable to set status: " + err.Error())
+		}
 	}
 
 	socket := gowebsocket.New("ws://lofi-server.herokuapp.com/" + sessionId)
@@ -75,6 +87,9 @@ func main() {
 func playAudio() {
 	for {
 		command := exec.Command("mpv", "--no-video", "-")
+		if optionVideo {
+			command = exec.Command("mpv", "-")
+		}
 		streamPipe, _ = command.StdinPipe()
 		command.Run()
 		if !streaming {
