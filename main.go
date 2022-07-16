@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/hugolgst/rich-go/client"
 	"github.com/sacOO7/gowebsocket"
 )
 
@@ -24,6 +25,22 @@ func main() {
 	signal.Notify(interrupt, os.Interrupt)
 	rand.Seed(time.Now().UnixNano())
 	sessionId := strconv.Itoa(rand.Intn(2147483648))
+
+	err := client.Login("997806917588095066")
+	if err != nil {
+		fmt.Println("Unable to set status: " + err.Error())
+	}
+	startTime := time.Now()
+	err = client.SetActivity(client.Activity{
+		State:      "Listening to lofi music",
+		LargeImage: "image",
+		Timestamps: &client.Timestamps{
+			Start: &startTime,
+		},
+	})
+	if err != nil {
+		fmt.Println("Unable to set status: " + err.Error())
+	}
 
 	socket := gowebsocket.New("ws://lofi-server.herokuapp.com/" + sessionId)
 	socket.OnConnected = func(socket gowebsocket.Socket) {
