@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strconv"
+	"time"
 
 	"github.com/sacOO7/gowebsocket"
 )
@@ -21,6 +22,7 @@ var (
 func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
+	rand.Seed(time.Now().UnixNano())
 	sessionId := strconv.Itoa(rand.Intn(2147483648))
 
 	socket := gowebsocket.New("ws://lofi-server.herokuapp.com/" + sessionId)
