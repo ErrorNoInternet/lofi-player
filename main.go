@@ -18,6 +18,7 @@ import (
 var (
 	streaming  bool = true
 	streamPipe io.Writer
+	command    *exec.Cmd
 	received   int64
 
 	optionNoPresence *bool
@@ -60,6 +61,8 @@ func main() {
 	socket.OnDisconnected = func(err error, socket gowebsocket.Socket) {
 		if streaming {
 			fmt.Println("\nDisconnected from server: " + err.Error())
+			received = 0
+			command.Process.Kill()
 			socket.Connect()
 		}
 	}
@@ -84,7 +87,7 @@ func main() {
 
 func playAudio() {
 	for {
-		command := exec.Command("mpv", "--no-video", "-")
+		command = exec.Command("mpv", "--no-video", "-")
 		if *optionVideo {
 			command = exec.Command("mpv", "-")
 		}
@@ -93,6 +96,6 @@ func playAudio() {
 		if !streaming {
 			return
 		}
-		fmt.Println("\nRestarting audio player...")
+		fmt.Println("Restarting audio player...")
 	}
 }
