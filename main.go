@@ -53,7 +53,7 @@ func main() {
 		}
 	}
 
-	socket := gowebsocket.New("ws://lofi-server.herokuapp.com/" + sessionId)
+	socket := gowebsocket.New("wss://lofi-server.herokuapp.com/" + sessionId)
 	socket.OnConnected = func(socket gowebsocket.Socket) {
 		fmt.Println("Successfully connected to server")
 		go playAudio()
